@@ -70,7 +70,7 @@
     "karma-webpack": "^1.7.0",
     "less-loader": "^2.2.1",
     "minimist": "^1.2.0",
-    "node-sass": "3.4.1",
+    "node-sass": "3.4.2",
     "npm-shrinkwrap": "^5.4.1",
     "phantomjs": "^1.9.18",
     "protractor": "^2.5.1",

@@ -1,5 +1,5 @@
 {
-  "firebase": "amber-fire-8732",
+  "firebase": "domomaps",
   "public": "build/prod",
   "ignore": [
     "firebase.json",
