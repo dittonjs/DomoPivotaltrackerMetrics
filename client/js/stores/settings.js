@@ -4,7 +4,7 @@ import Dispatcher     from "../dispatcher";
 import Constants      from "../constants";
 import StoreCommon    from "./store_common";
 import QueryString    from '../utils/query_string';
-
+import _              from 'lodash';
 var _settings = {};
 
 
@@ -15,15 +15,27 @@ function loadSettings(defaultSettings){
   var bestValue = function(settings_prop, params_prop, default_prop){
     return defaultSettings[settings_prop] || QueryString.params()[params_prop] || default_prop;
   };
+  var queryParams = getQueryParams(defaultSettings.iframeLocation)
 
   _settings = {
-    apiUrl           : bestValue('apiUrl', 'api_url', '/'),
-    firebaseUrl      : defaultSettings.firebaseUrl
+    firebaseUrl      : defaultSettings.firebaseUrl,
+    iframeLocation   : defaultSettings.iframeLocation,
+    queryParams
   };
 
 }
 
-
+function getQueryParams(url){
+  var queryParams = {};
+  var params = url.split("?")[1];
+  console.log(params);
+  var params = params.split("&");
+  _.each(params, (params)=>{
+    var temp = params.split("=")
+    queryParams[temp[0]] = temp[1];
+  });
+  return queryParams; 
+}
 // Extend Message Store with EventEmitter to add eventing capabilities
 var SettingsStore = {...StoreCommon, ...{
 

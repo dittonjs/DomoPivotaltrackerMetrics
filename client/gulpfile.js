@@ -37,7 +37,7 @@ function getHashed(entryPoint){
 // -----------------------------------------------------------------------------
 gulp.task('clean', function(cb){
   var rimraf = require('rimraf');
-  rimraf(outputPath+"/", cb);
+  rimraf(outputPath+"/*_web_pack_bundle.js", cb);
 });
 
 
@@ -136,7 +136,7 @@ gulp.task('copy-domo-manifest', function() {
 
 // Build the app from source code
 // -----------------------------------------------------------------------------
-gulp.task('build', function(cb){
+gulp.task('build',["clean"], function(cb){
   runSequence(['vendor', 'fonts', 'images', 'javascript', 'html'], cb);
 });
 

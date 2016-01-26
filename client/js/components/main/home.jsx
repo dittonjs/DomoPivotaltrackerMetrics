@@ -3,57 +3,41 @@
 import React         from 'react';
 import Firebase      from 'firebase';
 import SettingsStore from '../../stores/settings';
+import Domo          from '../../utils/domo';
+import BaseComponent from '../base_component';
+import _             from 'lodash';
+import history       from '../../history';
+export default class Home extends BaseComponent{
 
+  constructor(props){
+    super(props);
+    this.stores = [SettingsStore];
+    this.state = this.getState(props);
+    this.ptFirebaseRef = new Firebase(`${SettingsStore.current().firebaseUrl}/${SettingsStore.current().queryParams.customer}/apiToken`);
+  }
 
-export default class Home extends React.Component{
-
-  constructor(){
-    super();
-    this.firebaseItemsUrl = `${SettingsStore.current().firebaseUrl}/items`;
-    this.firebaseRef = new Firebase(this.firebaseItemsUrl);
-    this.state = {
-      items: {},
-      text: ""
-    };
+  getState(props){
+    return {
+      settings: SettingsStore.current()
+    }
   }
 
   componentWillMount(){
-    // Firebase docs for 'on': https://www.firebase.com/docs/web/api/query/on.html
-    this.firebaseRef.on("child_added", function(dataSnapshot) {
-      this.state.items[dataSnapshot.key()] = dataSnapshot.val()
-      this.setState({ items: this.state.items });
-    }.bind(this));
-    this.firebaseRef.on("child_removed", function(dataSnapshot) {
-      delete this.state.items[dataSnapshot.key()];
-      this.setState({ items: this.state.items });
-    }.bind(this));
-  }
-
-  componentWillUnmount(){
-    this.firebaseRef.off();
-  }
-  
-  handleAdd(e){
-    e.preventDefault();
-    this.firebaseRef.push({
-      text: this.refs.newItem.value
+    this.ptFirebaseRef.on("value", (data)=>{
+      console.log(data.val());
+      if(!data.val()){
+        history.pushState(null, "setup_pt");
+      } 
     });
-  }
-
-  handleDelete(e, id){
-    e.preventDefault();
-    var itemRef = new Firebase(`${this.firebaseItemsUrl}/${id}`);
-    itemRef.remove();
   }
 
   render(){
-    var items = _.map(this.state.items, (item, id) => {
-      return <li key={id}>{item.text} <button onClick={(e) => {this.handleDelete(e, id);}}>Delete</button></li>;
-    });
+    var params = _.map(this.state.settings.queryParams, (setting, key)=>{
+      console.log(setting, key)
+      return <div key={key}>{key}: {setting}</div>
+    }); 
     return(<div>
-      <input ref="newItem" type="text" />
-      <button onClick={(e) => {this.handleAdd(e);}} >Add</button>      
-      <ul>{items}</ul>
+      {params}
     </div>);
   }
 };
