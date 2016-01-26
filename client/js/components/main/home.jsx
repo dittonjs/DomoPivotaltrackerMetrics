@@ -7,6 +7,7 @@ import Domo          from '../../utils/domo';
 import BaseComponent from '../base_component';
 import _             from 'lodash';
 import history       from '../../history';
+import Highchart     from './highchart';
 export default class Home extends BaseComponent{
 
   constructor(props){
@@ -30,14 +31,29 @@ export default class Home extends BaseComponent{
       } 
     });
   }
-
+  getStyles(){
+    return {
+      container: {
+        width: "100%",
+        height: "100vh",
+        backgroundColor: "whitesmoke",
+        padding: "20px",
+      },
+      chart: {
+        width: "50%"
+      }
+    }
+  }
   render(){
+    var styles = this.getStyles();
     var params = _.map(this.state.settings.queryParams, (setting, key)=>{
       console.log(setting, key)
       return <div key={key}>{key}: {setting}</div>
     }); 
-    return(<div>
-      {params}
+    return(<div style={styles.container}>
+      <div style={styles.chart}>
+        <Highchart />
+      </div>
     </div>);
   }
 };

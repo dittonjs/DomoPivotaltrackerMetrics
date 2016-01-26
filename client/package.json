@@ -25,6 +25,7 @@
     "null-loader": "^0.1.1",
     "react": "^0.14.1",
     "react-dom": "^0.14.1",
+    "react-highcharts": "^6.0.0",
     "react-proxy-loader": "^0.3.4",
     "react-router": "^1.0.0-rc3",
     "react-tap-event-plugin": "^0.2.1",
