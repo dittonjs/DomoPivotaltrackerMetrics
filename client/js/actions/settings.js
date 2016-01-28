@@ -15,6 +15,10 @@ export default {
         Api.get(Constants.REFRESH_JWT, `api/sessions/${defaultSettings.userId}`);
       }, refresh);
     }
+  },
+
+  setApiToken(token){
+    Dispatcher.dispatch({action: Constants.SET_API_TOKEN, token})
   }
 
 };

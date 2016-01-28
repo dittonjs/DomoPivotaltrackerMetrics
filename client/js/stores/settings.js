@@ -54,6 +54,9 @@ Dispatcher.register(function(payload) {
     case Constants.SETTINGS_LOAD:
       loadSettings(payload.data);
       break;
+    case Constants.SET_API_TOKEN:
+      _settings.apiToken = payload.token;
+      break;
 
     default:
       return true;

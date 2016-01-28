@@ -1,18 +1,22 @@
 "use strict";
 
 import React from 'react';
-import ReactHighchart from "react-highcharts/dist/bundle/highcharts"
-export default class Highchart extends React.Component{
-  componentDidMount(){
+import ReactHighchart from "react-highcharts/dist/bundle/highcharts";
+import _ from 'lodash';
 
-  }
-  render(){
-    var config = {
+export default class Highchart extends React.Component{
+  setupConfig(firstDate){
+    var today = new Date();
+    var createdAtDate = new Date(firstDate);
+    var i = 0;
+    var foundData = {};
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var config ={
       title: {
         text: "Stories"
       },
       xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        categories: []
       },
       yAxis: {
         title: {
@@ -21,16 +25,59 @@ export default class Highchart extends React.Component{
       },
       series: [{
         name: "Stories Created",
-        data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+        data: []
       }, {
         name: "Bugs Added",
-        data: [ 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4,29.9, 71.5, 106.4, 129.2, 144.0]
+        data: []
       },
       {
-        name: "Stories Rejected",
-        data: [ 216.4, 194.1, 95.6, 54.4,29.9,176.0, 135.6, 148.5, 71.5, 106.4, 129.2, 144.0]
+        name: "Stories Accepted",
+        data: []
       }],
     };
+    var done = false;
+    var month = createdAtDate.getMonth();
+    var year = createdAtDate.getFullYear();
+    var endMonth = today.getMonth();
+    var endYear = today.getFullYear();
+    while(!done){
+      foundData[months[month]+" "+year] = i++;
+      config.xAxis.categories.push(months[month]+" "+year);
+      config.series[0].data[foundData[months[month]+" "+year]] = 0;
+      config.series[1].data[foundData[months[month]+" "+year]] = 0;
+      config.series[2].data[foundData[months[month]+" "+year]] = 0;
+      if(month == endMonth && year == endYear) {
+        done = true;
+        continue;
+      }
+      month++;
+      if(month == 12) {
+        year++;
+        month = 0;
+      }
+    }
+    return {config, foundData};
+  }
+  getAllData(){
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var sortedCreationData = _.sortBy(this.props.stories, story=>story.id);
+    var {config, foundData} = this.setupConfig(sortedCreationData[0].created_at);
+    _.each(sortedCreationData, (story)=>{
+        var seriesIndex = story.story_type == "feature" || story.story_type == "chore" ? 0 : 1;
+        var created = new Date(story.created_at);
+        var accepted = story.current_state == "accepted" ? new Date(story.accepted_at) : null;
+        var dataIndex = foundData[months[created.getMonth()]+" "+created.getFullYear()];
+        config.series[seriesIndex].data[dataIndex] = config.series[seriesIndex].data[dataIndex] + 1;
+        if(accepted){
+          dataIndex = foundData[months[accepted.getMonth()]+" "+accepted.getFullYear()];
+          config.series[2].data[dataIndex] = config.series[2].data[dataIndex] + 1;
+        }
+    });
+    return config;
+  }
+  render(){
+    if(!this.props.stories) return <div />
+    var config = this.getAllData();
     return <ReactHighchart ref="chart" config={config} />;
   }
 };
