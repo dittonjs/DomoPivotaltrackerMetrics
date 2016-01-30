@@ -13,6 +13,7 @@ export default {
   SET_API_TOKEN: "set_api_token",
   GET_PROJECTS: "get_projects",
   GET_STORIES: "get_stories",
-  CHANGE_SELECTED_PROJECT: "change_selected_project"
+  CHANGE_SELECTED_PROJECT: "change_selected_project",
+  GET_MEMBERS: "get_members"
   
 };

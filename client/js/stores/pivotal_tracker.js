@@ -9,6 +9,7 @@ import _              from 'lodash';
 var _projects = {};
 var _stories = {};
 var _selectedProject = {};
+var _projectMembers = {};
 
 var PivotalTrackerStore = {...StoreCommon, ...{
   project(id){
@@ -22,6 +23,9 @@ var PivotalTrackerStore = {...StoreCommon, ...{
   },
   stories(){
     return _stories;
+  },
+  projectMembers(){
+    return _projectMembers;
   }
 }};
 
@@ -39,6 +43,12 @@ Dispatcher.register(function(payload) {
       _.each(payload.res.body.data, (story)=>{
         if(!_stories[story.project_id]) _stories[story.project_id] = [];
         _stories[story.project_id].push(story);
+      });
+    break;
+    case Constants.GET_MEMBERS: 
+      _.each(payload.res.body, (member)=>{
+        if(!_projectMembers[member.project_id]) _projectMembers[member.project_id] = [];
+        _projectMembers[member.project_id].push(member);
       });
     break;
     case Constants.CHANGE_SELECTED_PROJECT:

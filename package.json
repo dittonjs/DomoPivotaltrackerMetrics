@@ -12,7 +12,8 @@
     "hot": "cd ./client && gulp build && node webpack.hot.js",
     "test": "cd ./client && node_modules/karma/bin/karma start",
     "coveralls": "cat coverage/lcov.info | coveralls",
-    "domopublish": "cd ./build/prod && domo publish"
+    "domopublish": "cd ./build/prod && domo publish",
+    "domodev": "cd ./build/dev && domo dev"
   },
   "repository": {
     "type": "git",

@@ -11,6 +11,7 @@ import BaseComponent                from '../base_component';
 import _                            from 'lodash';
 import history                      from '../../history';
 import Highchart                    from './highchart';
+import PieChart                     from './pie_chart';
 import Constants                    from '../../constants';
 import DateRangeTabs                from './date_range_tabs';
 import ProjectSelector              from './project_selector'; 
@@ -21,6 +22,7 @@ export default class Home extends BaseComponent{
     super(props);
     this.stores = [SettingsStore, PivotalTrackerStore];
     this.state = this.getState(props);
+    this.Domo = new Domo();
     this.ptFirebaseRef = new Firebase(`${SettingsStore.current().firebaseUrl}/${SettingsStore.current().queryParams.customer}/apiToken`);
   }
 
@@ -48,6 +50,7 @@ export default class Home extends BaseComponent{
   componentWillUpdate(nextProps, nextState){
     if(nextState.selectedProject.id != this.state.selectedProject.id && !nextState.stories[nextState.selectedProject.id]){
       PivotalTrackerActions.ptAction(`projects/${nextState.selectedProject.id}/stories`, "get", false, nextState.settings.apiToken, Constants.GET_STORIES, true);
+      PivotalTrackerActions.ptAction(`projects/${nextState.selectedProject.id}/memberships`, "get", false, nextState.settings.apiToken, Constants.GET_MEMBERS, false);
     }
   }
 
@@ -59,20 +62,30 @@ export default class Home extends BaseComponent{
         backgroundColor: "whitesmoke",
         padding: "20px",
       },
-      chart: {
-        width: "50%"
+      selector: {
+        paddingBottom: "5px"
+      },
+      row: {
+        width: "100%"
       }
     }
   }
   render(){
     var styles = this.getStyles();
     return(
-      <div style={styles.container}>
-        <div style={styles.chart}>
+      <div style={styles.container} className="container">
+        <div style={styles.selector}>
           <ProjectSelector 
             selectedProject={this.state.selectedProject} 
             projects={this.state.projects}/>
-          <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
+        </div>
+        <div style={styles.row} className="row">
+          <div className="col-md-6 col-lg-6 col-xl-6">
+            <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
+          <div className="col-md-3 col-lg-3 col-xl-3">
+            <PieChart stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
         </div>
       </div>
     );

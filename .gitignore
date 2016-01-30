@@ -22,7 +22,9 @@ s3_website.yml
 
 node_modules
 npm-debug.log
-build/dev
+build/dev/*.html
+build/dev/*.xml
+build/dev/*.txt
 build/prod/*.html
 build/prod/*.xml
 build/prod/*.txt
