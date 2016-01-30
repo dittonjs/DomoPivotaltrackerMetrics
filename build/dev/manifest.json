@@ -5,6 +5,25 @@
     "width": 5,
     "height": 2
   },
-  "mapping": [],
+  "mapping": [
+    {
+      "alias": "cost",
+      "dataSetId": "3ff3e7cc-1632-44b5-a329-6676967efb50",
+      "fields": [
+        {
+          "alias": "month",
+          "columnName": "Month"
+        },
+        {
+          "alias": "year",
+          "columnName": "Year"
+        },
+        {  
+          "alias": "cost",
+          "columnName": "Cost"
+        }
+      ]
+    }
+  ],
   "id": "cdf258c8-683e-4c2d-be1c-539bac2d2e71"
 }

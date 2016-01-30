@@ -14,6 +14,7 @@ export default {
   GET_PROJECTS: "get_projects",
   GET_STORIES: "get_stories",
   CHANGE_SELECTED_PROJECT: "change_selected_project",
-  GET_MEMBERS: "get_members"
+  GET_MEMBERS: "get_members",
+  GET_COST_DATA: "get_cost_data"
   
 };

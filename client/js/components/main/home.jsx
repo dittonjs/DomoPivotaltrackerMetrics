@@ -6,6 +6,8 @@ import SettingsStore                from '../../stores/settings';
 import SettingsActions              from '../../actions/settings';
 import PivotalTrackerActions        from '../../actions/pivotal_tracker';
 import PivotalTrackerStore          from '../../stores/pivotal_tracker';
+import DomoDataActions              from '../../actions/domo_data';
+import DomoDataStore                from '../../stores/domo_data';
 import Domo                         from '../../utils/domo';
 import BaseComponent                from '../base_component';
 import _                            from 'lodash';
@@ -20,9 +22,8 @@ export default class Home extends BaseComponent{
 
   constructor(props){
     super(props);
-    this.stores = [SettingsStore, PivotalTrackerStore];
+    this.stores = [SettingsStore, PivotalTrackerStore, DomoDataStore];
     this.state = this.getState(props);
-    this.Domo = new Domo();
     this.ptFirebaseRef = new Firebase(`${SettingsStore.current().firebaseUrl}/${SettingsStore.current().queryParams.customer}/apiToken`);
   }
 
@@ -31,11 +32,16 @@ export default class Home extends BaseComponent{
       settings: SettingsStore.current(),
       selectedProject: PivotalTrackerStore.selectedProject(),
       projects: PivotalTrackerStore.projects(),
-      stories: PivotalTrackerStore.stories()
+      stories: PivotalTrackerStore.stories(),
+      projectMembers: PivotalTrackerStore.projectMembers(),
+      costData: DomoDataStore.costData()
     }
   }
 
   componentWillMount(){
+    Domo.get('/data/v1/cost').then((costData)=>{
+      DomoDataActions.getCostData(costData);
+    });
     this.ptFirebaseRef.on("value", (data)=>{
       console.log(data.val());
       if(!data.val()){
@@ -71,6 +77,7 @@ export default class Home extends BaseComponent{
     }
   }
   render(){
+    console.log(this.state);
     var styles = this.getStyles();
     return(
       <div style={styles.container} className="container">
