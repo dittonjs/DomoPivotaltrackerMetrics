@@ -14,6 +14,7 @@ import _                            from 'lodash';
 import history                      from '../../history';
 import Highchart                    from './highchart';
 import PieChart                     from './pie_chart';
+import CostGoalChart                from './cost_goal_chart';
 import Constants                    from '../../constants';
 import DateRangeTabs                from './date_range_tabs';
 import ProjectSelector              from './project_selector'; 
@@ -92,6 +93,9 @@ export default class Home extends BaseComponent{
           </div>
           <div className="col-md-3 col-lg-3 col-xl-3">
             <PieChart stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
+          <div className="col-md-3 col-lg-3 col-xl-3">
+            <CostGoalChart costData={this.state.costData[this.state.selectedProject.id]} stories={this.state.stories[this.state.selectedProject.id]}/>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ var _projects = {};
 var _stories = {};
 var _selectedProject = {};
 var _projectMembers = {};
-var _costData = [];
+var _costData = {};
 var DomoDataStore = {...StoreCommon, ...{
   costData(){
     return _costData;
@@ -21,7 +21,9 @@ var DomoDataStore = {...StoreCommon, ...{
 Dispatcher.register(function(payload) {
   switch(payload.action){
     case Constants.GET_COST_DATA:
-      _costData = payload.data;
+    _.each(payload.data, (data)=>{
+      _costData[data.id] = data;
+    })
     break;
     default:
       return true;

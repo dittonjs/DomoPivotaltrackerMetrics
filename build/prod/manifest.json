@@ -1,10 +1,33 @@
 {
-  "name": "FirebasePivotalDomo",
+  "name": "DomoPivotalTrackerMetrics",
   "version": "1.0.0",
   "size": {
     "width": 5,
     "height": 2
   },
-  "mapping": [],
+  "mapping": [
+    {
+      "alias": "cost",
+      "dataSetId": "4a95ddf2-9733-44ae-bd28-6d011c9bcba0",
+      "fields": [
+        {
+          "alias": "name",
+          "columnName": "Project Name"
+        },
+        {
+          "alias": "id",
+          "columnName": "Pivotal Tracker Project Id"
+        },
+        {  
+          "alias": "cost",
+          "columnName": "Cost of Development So Far"
+        },
+        {  
+          "alias": "goal",
+          "columnName": "Development Cost Goal"
+        }     
+      ]
+    }
+  ],
   "id": "cdf258c8-683e-4c2d-be1c-539bac2d2e71"
 }
