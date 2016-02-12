@@ -8,6 +8,7 @@ import PivotalTrackerActions        from '../../actions/pivotal_tracker';
 import PivotalTrackerStore          from '../../stores/pivotal_tracker';
 import DomoDataActions              from '../../actions/domo_data';
 import DomoDataStore                from '../../stores/domo_data';
+import ApplicationStore             from '../../stores/application';
 import Domo                         from '../../utils/domo';
 import BaseComponent                from '../base_component';
 import _                            from 'lodash';
@@ -17,13 +18,15 @@ import PieChart                     from './pie_chart';
 import CostGoalChart                from './cost_goal_chart';
 import Constants                    from '../../constants';
 import DateRangeTabs                from './date_range_tabs';
-import ProjectSelector              from './project_selector'; 
+import ProjectSelector              from './project_selector';
+import Navbar                       from './navbar';
+import Sidebar                      from './sidebar'; 
 
 export default class Home extends BaseComponent{
 
   constructor(props){
     super(props);
-    this.stores = [SettingsStore, PivotalTrackerStore, DomoDataStore];
+    this.stores = [ApplicationStore, SettingsStore, PivotalTrackerStore, DomoDataStore];
     this.state = this.getState(props);
     this.ptFirebaseRef = new Firebase(`${SettingsStore.current().firebaseUrl}/${SettingsStore.current().queryParams.customer}/apiToken`);
   }
@@ -35,7 +38,8 @@ export default class Home extends BaseComponent{
       projects: PivotalTrackerStore.projects(),
       stories: PivotalTrackerStore.stories(),
       projectMembers: PivotalTrackerStore.projectMembers(),
-      costData: DomoDataStore.costData()
+      costData: DomoDataStore.costData(),
+      sidebarOpen: ApplicationStore.sidebarOpen()
     }
   }
 
@@ -70,7 +74,8 @@ export default class Home extends BaseComponent{
         padding: "20px",
       },
       selector: {
-        paddingBottom: "5px"
+        paddingBottom: "5px",
+        marginTop: "70px"
       },
       row: {
         width: "100%"
@@ -82,6 +87,8 @@ export default class Home extends BaseComponent{
     var styles = this.getStyles();
     return(
       <div style={styles.container} className="container">
+        <Navbar sidebarOpen={this.state.sidebarOpen} selectedTab={"Dashboard"}/>
+        <Sidebar sidebarOpen={this.state.sidebarOpen} />
         <div style={styles.selector}>
           <ProjectSelector 
             selectedProject={this.state.selectedProject} 
