@@ -39,7 +39,8 @@ export default class Home extends BaseComponent{
       stories: PivotalTrackerStore.stories(),
       projectMembers: PivotalTrackerStore.projectMembers(),
       costData: DomoDataStore.costData(),
-      sidebarOpen: ApplicationStore.sidebarOpen()
+      sidebarOpen: ApplicationStore.sidebarOpen(),
+      tabName: ApplicationStore.pane()
     }
   }
 
@@ -66,20 +67,31 @@ export default class Home extends BaseComponent{
   }
 
   getStyles(){
+    var marginLeft = "0px";
+    if(this.state.tabName == "stories") marginLeft = "0px";
+    if(this.state.tabName == "members") marginLeft = "-1140px";
+    if(this.state.tabName == "suggestions") marginLeft = "-1600";
     return {
       container: {
+        whiteSpace: "nowrap",
         width: "100%",
         height: "100vh",
         backgroundColor: "whitesmoke",
         padding: "20px",
+        overflowX: "hidden"
       },
       selector: {
         paddingBottom: "5px",
-        marginTop: "70px"
+        marginTop: "70px",
       },
       row: {
-        width: "100%"
-      }
+        width: "100%",
+        display: "inline-block"
+      },
+      firstRow: {
+        marginLeft: marginLeft,
+        transition: "all 1s ease"
+      }    
     }
   }
   render(){
@@ -94,8 +106,19 @@ export default class Home extends BaseComponent{
             selectedProject={this.state.selectedProject} 
             projects={this.state.projects}/>
         </div>
-        <div style={styles.row} className="row">
-          <div className="col-md-6 col-lg-6 col-xl-6">
+        <div style={{...styles.row,...styles.firstRow}}>
+          <div style={styles.highchart} className="col-md-6 col-lg-6 col-xl-6">
+            <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
+          <div className="col-md-3 col-lg-3 col-xl-3">
+            <PieChart stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
+          <div className="col-md-3 col-lg-3 col-xl-3">
+            <CostGoalChart costData={this.state.costData[this.state.selectedProject.id]} stories={this.state.stories[this.state.selectedProject.id]}/>
+          </div>
+        </div>
+        <div style={styles.row}>
+          <div style={styles.highchart} className="col-md-6 col-lg-6 col-xl-6">
             <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
           </div>
           <div className="col-md-3 col-lg-3 col-xl-3">

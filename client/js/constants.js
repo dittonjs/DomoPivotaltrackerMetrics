@@ -16,6 +16,7 @@ export default {
   CHANGE_SELECTED_PROJECT: "change_selected_project",
   GET_MEMBERS: "get_members",
   GET_COST_DATA: "get_cost_data",
-  OPEN_SIDEBAR: "open_sidebar"
+  OPEN_SIDEBAR: "open_sidebar",
+  SET_PANE: "set_pane"
   
 };

@@ -7,10 +7,13 @@ import QueryString    from '../utils/query_string';
 import _              from 'lodash';
 
 var sidebarOpen = false;
-
+var pane = "stories"
 var ApplicationStore = {...StoreCommon, ...{
   sidebarOpen(){
     return sidebarOpen;
+  },
+  pane(){
+    return pane;
   }
 }};
 
@@ -19,6 +22,9 @@ Dispatcher.register(function(payload) {
   switch(payload.action){
     case Constants.OPEN_SIDEBAR:
       sidebarOpen = !sidebarOpen;
+    break;
+    case Constants.SET_PANE:
+      pane = payload.name;
     break;
     default:
       return true;
