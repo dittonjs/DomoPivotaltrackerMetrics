@@ -3,8 +3,14 @@
 import React from 'react';
 import ReactHighchart from "react-highcharts/dist/bundle/highcharts";
 import _ from 'lodash';
+import MessageActions from "../../actions/message";
+import IdAdder from "../../utils/id_adder";
 
 export default class CostGoalChart extends React.Component{
+  shouldComponentUpdate(nextProps){
+    if(nextProps.sidebarOpen != this.props.sidebarOpen && nextProps.tabName == this.props.tabName) return false;
+    return true;
+  }
   setupConfig(){
 
     var config = {
@@ -114,14 +120,54 @@ export default class CostGoalChart extends React.Component{
     var notAccepted = _.filter(this.props.stories, (story)=>(story.current_state != "accepted"));
     var data = this.getAverages(features, bugs, chores);
     var {config} = this.setupConfig();
-    var featureCost = (data.featurePercentage * this.props.costData.cost) / features.length;
-    var bugCost = (data.bugPercentage * this.props.costData.cost) / bugs.length;
-    var choreCost = (data.chorePercentage * this.props.costData.cost) / chores.length;
     var cost = this.props.costData.cost / this.props.stories.length;
     var remainingGoal = (this.props.costData.goal - this.props.costData.cost) / notAccepted.length;
     config.series[0].data[0] = cost;
     config.series[0].data[1] = remainingGoal;
+    this.addMessages(cost, remainingGoal);
     return config;
+  }
+  addMessages(cost, remainingGoal){
+    if(remainingGoal / cost > 2){
+      var message = {
+        id: "cost_0",
+        message: "We have noticed that your cost per story is well below your goal. Perhaps you could re-evaluate your goal to something that can help your team make improvements.",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(remainingGoal / cost < .5){
+      var message = {
+        id: "cost_1",
+        message: "Your cost is high above what your goal is. This tells us that your goal might have been set to low. Try some of the other suggestions and if your cost does not go down you might consider re-evaluating your goal.",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(remainingGoal / cost >= .5 && remainingGoal / cost < .2){
+      var message = {
+        id: "cost_2",
+        message: "You have alot to do to reach your goal. You have to make a $" + (cost - remainingGoal) + " cost improvement per story in order to reach your goal.",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(remainingGoal / cost < 1 && remainingGoal / cost >= .2){
+      var message = {
+        id: "cost_3",
+        message: "You are pretty close to reaching your goal! You have to make a $" + (cost - remainingGoal) + " cost improvement per story in order to reach your goal.",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(remainingGoal / cost >= 1  && remainingGoal / cost <=2){
+      var message = {
+        id: "cost_4",
+        message: "You are reaching your goal. Keep up the good work!",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
   }
   render(){
     if(!this.props.costData){

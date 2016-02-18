@@ -18,9 +18,11 @@ import PieChart                     from './pie_chart';
 import CostGoalChart                from './cost_goal_chart';
 import Constants                    from '../../constants';
 import DateRangeTabs                from './date_range_tabs';
+import EmployeeStoryChart           from './employee_story_chart';
 import ProjectSelector              from './project_selector';
 import Navbar                       from './navbar';
-import Sidebar                      from './sidebar'; 
+import Sidebar                      from './sidebar';
+import MessageBoard                 from './message_board'; 
 
 export default class Home extends BaseComponent{
 
@@ -40,7 +42,7 @@ export default class Home extends BaseComponent{
       projectMembers: PivotalTrackerStore.projectMembers(),
       costData: DomoDataStore.costData(),
       sidebarOpen: ApplicationStore.sidebarOpen(),
-      tabName: ApplicationStore.pane()
+      tabName: ApplicationStore.pane(),
     }
   }
 
@@ -49,7 +51,6 @@ export default class Home extends BaseComponent{
       DomoDataActions.getCostData(costData);
     });
     this.ptFirebaseRef.on("value", (data)=>{
-      console.log(data.val());
       if(!data.val()){
         history.pushState(null, "setup_pt");
       } else {
@@ -67,10 +68,10 @@ export default class Home extends BaseComponent{
   }
 
   getStyles(){
-    var marginLeft = "0px";
-    if(this.state.tabName == "stories") marginLeft = "0px";
-    if(this.state.tabName == "members") marginLeft = "-1140px";
-    if(this.state.tabName == "suggestions") marginLeft = "-1600";
+    var marginLeft = "-15px";
+    if(this.state.tabName == "stories") marginLeft = "-15px";
+    if(this.state.tabName == "members") marginLeft = "-1170px";
+    if(this.state.tabName == "suggestions") marginLeft = "-2325px";
     return {
       container: {
         whiteSpace: "nowrap",
@@ -78,11 +79,11 @@ export default class Home extends BaseComponent{
         height: "100vh",
         backgroundColor: "whitesmoke",
         padding: "20px",
-        overflowX: "hidden"
+        overflow: "hidden"
       },
       selector: {
         paddingBottom: "5px",
-        marginTop: "70px",
+        marginTop: "60px",
       },
       row: {
         width: "100%",
@@ -91,6 +92,9 @@ export default class Home extends BaseComponent{
       firstRow: {
         marginLeft: marginLeft,
         transition: "all 1s ease"
+      },
+      secondRow: {
+        marginLeft: "30px"
       }    
     }
   }
@@ -99,7 +103,7 @@ export default class Home extends BaseComponent{
     var styles = this.getStyles();
     return(
       <div style={styles.container} className="container">
-        <Navbar sidebarOpen={this.state.sidebarOpen} selectedTab={"Dashboard"}/>
+        <Navbar sidebarOpen={this.state.sidebarOpen} tabName={this.state.tabName}/>
         <Sidebar sidebarOpen={this.state.sidebarOpen} />
         <div style={styles.selector}>
           <ProjectSelector 
@@ -108,24 +112,45 @@ export default class Home extends BaseComponent{
         </div>
         <div style={{...styles.row,...styles.firstRow}}>
           <div style={styles.highchart} className="col-md-6 col-lg-6 col-xl-6">
-            <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
+            <Highchart
+              selectedProject={this.state.selectedProject}  
+              stories={this.state.stories[this.state.selectedProject.id]}
+              sidebarOpen={this.state.sidebarOpen}
+              tabName={this.state.tabName}
+            />
           </div>
           <div className="col-md-3 col-lg-3 col-xl-3">
-            <PieChart stories={this.state.stories[this.state.selectedProject.id]}/>
+            <PieChart
+              selectedProject={this.state.selectedProject}  
+              stories={this.state.stories[this.state.selectedProject.id]}
+              sidebarOpen={this.state.sidebarOpen}
+              tabName={this.state.tabName}
+            />
           </div>
           <div className="col-md-3 col-lg-3 col-xl-3">
-            <CostGoalChart costData={this.state.costData[this.state.selectedProject.id]} stories={this.state.stories[this.state.selectedProject.id]}/>
+            <CostGoalChart
+              selectedProject={this.state.selectedProject}  
+              costData={this.state.costData[this.state.selectedProject.id]} 
+              stories={this.state.stories[this.state.selectedProject.id]}
+              sidebarOpen={this.state.sidebarOpen}
+              tabName={this.state.tabName}
+            />
           </div>
         </div>
-        <div style={styles.row}>
-          <div style={styles.highchart} className="col-md-6 col-lg-6 col-xl-6">
-            <Highchart stories={this.state.stories[this.state.selectedProject.id]}/>
+        <div style={{...styles.row,...styles.secondRow}}>
+          <div style={styles.highchart} className="col-md-12 col-lg-12 col-xl-12">
+            <EmployeeStoryChart 
+              selectedProject={this.state.selectedProject} 
+              stories={this.state.stories[this.state.selectedProject.id]}
+              sidebarOpen={this.state.sidebarOpen}
+              tabName={this.state.tabName}
+              projectMembers={this.state.projectMembers[this.state.selectedProject.id]}
+            />
           </div>
-          <div className="col-md-3 col-lg-3 col-xl-3">
-            <PieChart stories={this.state.stories[this.state.selectedProject.id]}/>
-          </div>
-          <div className="col-md-3 col-lg-3 col-xl-3">
-            <CostGoalChart costData={this.state.costData[this.state.selectedProject.id]} stories={this.state.stories[this.state.selectedProject.id]}/>
+        </div>
+        <div style={{...styles.row,...styles.secondRow}}>
+          <div style={styles.highchart} className="col-md-12 col-lg-12 col-xl-12">
+            <MessageBoard selectedProject={this.state.selectedProject}/>
           </div>
         </div>
       </div>

@@ -3,8 +3,14 @@
 import React from 'react';
 import ReactHighchart from "react-highcharts/dist/bundle/highcharts";
 import _ from 'lodash';
-
+import MessageActions from "../../actions/message";
 export default class PieChart extends React.Component{
+
+  shouldComponentUpdate(nextProps){
+    if(nextProps.sidebarOpen != this.props.sidebarOpen && nextProps.tabName == this.props.tabName) return false;
+    return true;
+  }
+  
   setupConfig(){
 
     var config = {
@@ -104,12 +110,40 @@ export default class PieChart extends React.Component{
     return averages;
   }
 
+  getMessages(averages){
+    if(averages.bugAverage / 24 > 10){
+      var message = {
+        id: "time_0",
+        message: "Right now it takes about " + (averages.bugAverage / 24) + " days to fix each bug reported. You will decrease your development cost if you can cut that down to under 10 days!",
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(averages.bugAverage / 24 <= 10){
+      var message = {
+        id: "time_1",
+        message: "You are a good pace for fixing bugs! Keep up the good work.", 
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+    if(averages.bugAverage / 24 <= 8){
+      var message = {
+        id: "time_1",
+        message: "Its takes you about " + (averages.bugAverage / 24) +" to fix bugs! You probably could focus a little less on bugs to get some more features implemented. Be careful that it doesn't take you more than 10 days to fix bugs though.", 
+        sourceTab: "stories"
+      }
+      MessageActions.addMessage(this.props.selectedProject.id, message);
+    }
+  }
+
   getAllData(){
     //debugger;
     var features = _.filter(this.props.stories, (story)=>(story.story_type == "feature"));
     var bugs = _.filter(this.props.stories, (story)=>(story.story_type == "bug"));
     var chores = _.filter(this.props.stories, (story)=>(story.story_type == "chore"));
     var data = this.getAverages(features, bugs, chores);
+    this.getMessages(data)
     var {config} = this.setupConfig();
     config.series[0].data[0].days = data.featureAverage / 24;
     config.series[0].data[1].days = data.bugAverage / 24;

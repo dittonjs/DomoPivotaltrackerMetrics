@@ -17,7 +17,7 @@ export default class Navbar extends React.Component{
         left: this.props.sidebarOpen ? "0px" : "-260px",
         bottom: "0px",
         width: "250px",
-        backgroundColor: "darkslategray",
+        backgroundColor: "rgb(67,67,72)",
         color: "white",
         fontSize: "150%",
         zIndex: "10000",
@@ -26,7 +26,8 @@ export default class Navbar extends React.Component{
       menuItem: {
         padding: "20px",
         borderBottom: "1px solid gray",
-        fontSize: "70%"
+        fontSize: "70%",
+        cursor: "pointer"
       },
       icon: {
         marginRight: "5px"
@@ -37,10 +38,10 @@ export default class Navbar extends React.Component{
     var styles = this.getStyles();
     return (
       <div style={styles.navbar}>
-        <div style={{...styles.menuItem,...{fontSize:"100%"}}}>Menu</div>
-        <div onClick={(e)=>{this.setPane("stories")}}    style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-th-large"></i>Story Dashboard</div>
-        <div onClick={(e)=>{this.setPane("members")}}    style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-user"></i>Owner Data</div>
-        <div onClick={(e)=>{this.setPane("suggestion")}} style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-usd"></i>What should I do now?</div>
+        <div style={{...styles.menuItem,...{fontSize:"100%", cursor: ""}}}>Menu</div>
+        <div onClick={(e)=>{this.setPane("stories")}}    style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-th-large"></i>Are we meeting our goals?</div>
+        <div onClick={(e)=>{this.setPane("members")}}    style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-user"></i>How are our devs performing?</div>
+        <div onClick={(e)=>{this.setPane("suggestions")}} style={styles.menuItem}><i style={styles.icon} className="glyphicon glyphicon-usd"></i>What should we do now?</div>
       </div>
     )
   }

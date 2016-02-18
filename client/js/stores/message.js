@@ -6,36 +6,31 @@ import StoreCommon    from "./store_common";
 import QueryString    from '../utils/query_string';
 import _              from 'lodash';
 
-var sidebarOpen = false;
-var pane = "stories"
-var ApplicationStore = {...StoreCommon, ...{
-  sidebarOpen(){
-    return sidebarOpen;
-  },
-  pane(){
-    return pane;
+var messages = {}
+var MessageStore = {...StoreCommon, ...{
+  getMessages(){
+    return messages;
   }
 }};
 
 // Register callback with Dispatcher
 Dispatcher.register(function(payload) {
   switch(payload.action){
-    case Constants.OPEN_SIDEBAR:
-      sidebarOpen = !sidebarOpen;
-    break;
-    case Constants.SET_PANE:
-      pane = payload.name;
-      sidebarOpen = false;
-    break;
+    case Constants.ADD_MESSAGE:
+      var temp = messages[payload.projectId];
+      var temp = temp || {};
+      temp[payload.message.id] = payload.message;
+      messages[payload.projectId] = temp;
+      break;
     default:
       return true;
   }
 
   // If action was responded to, emit change event
-  ApplicationStore.emitChange();
+  MessageStore.emitChange();
 
   return true;
 
 });
 
-export default ApplicationStore;
+export default MessageStore;
