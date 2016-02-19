@@ -176,6 +176,21 @@ export default class CostGoalChart extends React.Component{
     console.log("data", this.props.costData);
     if(!this.props.stories) return <div />
     var config = this.getAllData();
-    return <ReactHighchart ref="chart" config={config} />;
+    var styles = {
+      blocker: {
+        position: "absolute",
+        bottom: "0px",
+        right: "1px",
+        backgroundColor: "white",
+        color: "white",
+        cursor: "default"
+      }
+    }
+    return (
+      <div style={{position: "relative"}}>
+        <ReactHighchart ref="chart" config={config} />
+        <div style={styles.blocker}>Highcharts.com</div>
+      </div>
+    );
   }
 };

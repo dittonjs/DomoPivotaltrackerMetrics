@@ -96,21 +96,37 @@ export default class Highchart extends React.Component{
     if(mostStoriesFinished == "") return;
     var message = {
       id: "stories_0",
-      message: "During the month of " + mostBugsFixed.month + " you fixed " + mostBugsFixed.bugs + " bugs! Thats more bugs than in any other month. Work with your developers to find out why that month was more productive to increase productivity in months to come.",
+      message: "During the month of " + mostBugsFixed.month + " you fixed " + mostBugsFixed.bugs + " bugs! That's more bugs than any other month. Work with your developers to find out why that month was more productive to increase productivity in months to come.",
       sourceTab: "stories"
     }
     MessageActions.addMessage(this.props.selectedProject.id, message);
     var message2 = {
       id: "stories_1",
-      message: "During the month of " + mostStoriesFinished.month + " you finished " + mostStoriesFinished.accepted + " new features! Thats more than in any other month. Work with your developers to find out why that month was more productive to increase productivity in months to come.",
+      message: "During the month of " + mostStoriesFinished.month + " you finished " + mostStoriesFinished.accepted + " new features! That's more than any other month. Work with your developers to find out why that month was more productive to increase productivity in months to come.",
       sourceTab: "stories"
     }
     MessageActions.addMessage(this.props.selectedProject.id, message2);
   }
+  
   render(){
     if(!this.props.stories) return <div />
     var config = this.getAllData();
     this.getMessages(config)
-    return <ReactHighchart ref="chart" config={config} />;
+    var styles = {
+      blocker: {
+        position: "absolute",
+        bottom: "0px",
+        right: "1px",
+        backgroundColor: "white",
+        color: "white",
+        cursor: "default"
+      }
+    }
+    return (
+      <div style={{position: "relative"}}>
+        <ReactHighchart ref="chart" config={config} />
+        <div style={styles.blocker}>Highcharts.com</div>
+      </div>
+    );
   }
 };

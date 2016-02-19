@@ -25,7 +25,8 @@ export default class MessageBoard extends BaseComponent{
         width: "100%",
         height: "400px",
         whiteSpace: "normal",
-        position: "relative"  
+        position: "relative",
+        overflow: "auto" 
       },
       message: {
         padding: "10px",
@@ -42,7 +43,8 @@ export default class MessageBoard extends BaseComponent{
         position: "absolute",
         top:"-30px",
         right: "0px",
-        fontSize: "150%"
+        fontSize: "150%",
+        zIndex: "100"
       }
     }
   }
@@ -72,19 +74,21 @@ export default class MessageBoard extends BaseComponent{
       if(index % 3 == 1) col2.push(message);
       if(index % 3 == 2) col3.push(message);
     });
-    return <div style={styles.container}>
+    return <div style={{position:"relative"}}>
             <div style={styles.messageBoard}>Message Board</div>
-            <div className="row">
-              <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                {col1}
+            <div style={styles.container}>
+              <div className="row">
+                <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                  {col1}
+                </div>
+                <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                  {col2}
+                </div>
+                <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                  {col3}
+                </div>
               </div>
-              <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                {col2}
-              </div>
-              <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
-                {col3}
-              </div>
-            </div>
-          </div>;
+          </div>
+        </div>;
   }
 };

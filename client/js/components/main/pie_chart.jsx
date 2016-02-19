@@ -21,7 +21,7 @@ export default class PieChart extends React.Component{
         type: 'pie'
       },
       title: {
-          text: 'Average lifespan of stories: from creation date to acceptance date.'
+          text: 'Average lifespan of stories from creation date to acceptance date.'
       },
       tooltip: {
           pointFormat: '{series.name}: <b>{point.days:.1f} Days</b>'
@@ -114,7 +114,7 @@ export default class PieChart extends React.Component{
     if(averages.bugAverage / 24 > 10){
       var message = {
         id: "time_0",
-        message: "Right now it takes about " + (averages.bugAverage / 24) + " days to fix each bug reported. You will decrease your development cost if you can cut that down to under 10 days!",
+        message: "Right now it takes about " + parseInt(averages.bugAverage / 24) + " days to fix each bug reported. You will decrease your development cost if you can cut that down to under 10 days!",
         sourceTab: "stories"
       }
       MessageActions.addMessage(this.props.selectedProject.id, message);
@@ -122,7 +122,7 @@ export default class PieChart extends React.Component{
     if(averages.bugAverage / 24 <= 10){
       var message = {
         id: "time_1",
-        message: "You are a good pace for fixing bugs! Keep up the good work.", 
+        message: "You are at a good pace for fixing bugs! Keep up the good work.", 
         sourceTab: "stories"
       }
       MessageActions.addMessage(this.props.selectedProject.id, message);
@@ -130,7 +130,7 @@ export default class PieChart extends React.Component{
     if(averages.bugAverage / 24 <= 8){
       var message = {
         id: "time_1",
-        message: "Its takes you about " + (averages.bugAverage / 24) +" to fix bugs! You probably could focus a little less on bugs to get some more features implemented. Be careful that it doesn't take you more than 10 days to fix bugs though.", 
+        message: "Its takes you about " + parseInt(averages.bugAverage / 24) +" to fix bugs! You probably could focus a little less on bugs to get some more features implemented. Be careful that it doesn't take you more than 10 days to fix bugs though.", 
         sourceTab: "stories"
       }
       MessageActions.addMessage(this.props.selectedProject.id, message);
@@ -156,6 +156,21 @@ export default class PieChart extends React.Component{
   render(){
     if(!this.props.stories) return <div />
     var config = this.getAllData();
-    return <ReactHighchart ref="chart" config={config} />;
+    var styles = {
+      blocker: {
+        position: "absolute",
+        bottom: "0px",
+        right: "1px",
+        backgroundColor: "white",
+        color: "white",
+        cursor: "default"
+      }
+    }
+    return (
+      <div style={{position: "relative"}}>
+        <ReactHighchart ref="chart" config={config} />
+        <div style={styles.blocker}>Highcharts.com</div>
+      </div>
+    );
   }
 };

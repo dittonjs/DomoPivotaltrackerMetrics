@@ -20,7 +20,7 @@ export default class EmployeeStoryChart extends React.Component{
         type: 'column'
       },
       title: {
-          text: 'Stories complete per developer.'
+          text: 'Stories completed per developer.'
       },
 
       xAxis: {
@@ -32,13 +32,13 @@ export default class EmployeeStoryChart extends React.Component{
       yAxis: {
           min: 0,
           title: {
-              text: 'Cost'
+              text: 'Stories Completed'
           }
       },
       tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-              '<td style="padding:0"><b>${point.y:.1f}</b></td></tr>',
+              '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -99,13 +99,13 @@ export default class EmployeeStoryChart extends React.Component{
     if(mostStoriesFinished == "") return;
     var message = {
       id: "devs_0",
-      message: "It looks like " + mostBugsFixed.dev + " has fixed " + mostBugsFixed.bugs + " bugs on this project! Which is more than any other developer. Maybe have them do some training on this project for the less exprienced developers.",
+      message: "It looks like " + mostBugsFixed.dev + " has fixed " + mostBugsFixed.bugs + " bugs on this project! Which is more than any other developer. Maybe have " + mostBugsFixed.dev + " do some training on this project for the less exprienced developers.",
       sourceTab: "members"
     }
     MessageActions.addMessage(this.props.selectedProject.id, message);
     var message2 = {
       id: "devs_1",
-      message: ""+mostStoriesFinished.dev + " is responsible for completing  " + mostStoriesFinished.accepted + " new features! Thats more than any other developer. Have them pair with the less experiences developers to help them gain familiarity with this project.",
+      message: "" + mostStoriesFinished.dev + " is responsible for completing  " + mostStoriesFinished.accepted + " new features! Which is more than any other developer. Have " + mostStoriesFinished.dev + " pair with the less experiences developers to help them gain familiarity with this project.",
       sourceTab: "members"
     }
     MessageActions.addMessage(this.props.selectedProject.id, message2);
@@ -130,6 +130,21 @@ export default class EmployeeStoryChart extends React.Component{
     // }
     if(!this.props.stories) return <div />
     var config = this.getAllData();
-    return <ReactHighchart ref="chart" config={config} />;
+        var styles = {
+      blocker: {
+        position: "absolute",
+        bottom: "0px",
+        right: "1px",
+        backgroundColor: "white",
+        color: "white",
+        cursor: "default"
+      }
+    }
+    return (
+      <div style={{position: "relative"}}>
+        <ReactHighchart ref="chart" config={config} />
+        <div style={styles.blocker}>Highcharts.com</div>
+      </div>
+    );
   }
 };
