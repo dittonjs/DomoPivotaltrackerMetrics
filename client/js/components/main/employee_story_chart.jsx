@@ -1,8 +1,9 @@
 "use strict";
 
-import React from 'react';
+import React          from 'react';
 import ReactHighchart from "react-highcharts/dist/bundle/highcharts";
-import _ from 'lodash';
+import _              from 'lodash';
+import MessageActions from '../../actions/message';
 
 export default class EmployeeStoryChart extends React.Component{
   shouldComponentUpdate(nextProps){
@@ -81,6 +82,35 @@ export default class EmployeeStoryChart extends React.Component{
     return average;
   }
 
+  getMessages(config){
+    var mostBugsFixed = {dev: "", bugs: 0};
+    var mostStoriesFinished = {dev: "", accepted: 0};
+    _.each(config.xAxis.categories, (dev,index)=>{
+      if(config.series[1].data[index] > mostBugsFixed.bugs){
+        mostBugsFixed.bugs = config.series[1].data[index];
+        mostBugsFixed.dev = dev;
+      }
+      if(config.series[0].data[index] > mostStoriesFinished.accepted){
+        mostStoriesFinished.accepted = config.series[0].data[index];
+        mostStoriesFinished.dev = dev;
+      }
+    });
+    if(mostBugsFixed.dev == "") return;
+    if(mostStoriesFinished == "") return;
+    var message = {
+      id: "devs_0",
+      message: "It looks like " + mostBugsFixed.dev + " has fixed " + mostBugsFixed.bugs + " bugs on this project! Which is more than any other developer. Maybe have them do some training on this project for the less exprienced developers.",
+      sourceTab: "members"
+    }
+    MessageActions.addMessage(this.props.selectedProject.id, message);
+    var message2 = {
+      id: "devs_1",
+      message: ""+mostStoriesFinished.dev + " is responsible for completing  " + mostStoriesFinished.accepted + " new features! Thats more than any other developer. Have them pair with the less experiences developers to help them gain familiarity with this project.",
+      sourceTab: "members"
+    }
+    MessageActions.addMessage(this.props.selectedProject.id, message2);
+  }
+
   getAllData(){
     console.log(this.props);    
     var {config, foundData} = this.setupConfig();
@@ -91,6 +121,7 @@ export default class EmployeeStoryChart extends React.Component{
       config.series[0].data[dataIndex] = myFeatures.length;
       config.series[1].data[dataIndex] = myBugs.length;
     });
+    this.getMessages(config);
     return config;
   }
   render(){

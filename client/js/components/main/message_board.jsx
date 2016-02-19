@@ -1,9 +1,11 @@
 "use strict";
 
-import React from 'react';
-import BaseComponent from '../base_component'
-import _     from 'lodash';
-import MessageStore from "../../stores/message"
+import React              from 'react';
+import BaseComponent      from '../base_component';
+import _                  from 'lodash';
+import MessageStore        from "../../stores/message";
+import ApplicationActions from "../../actions/application";
+
 export default class MessageBoard extends BaseComponent{
   constructor(props){
     super(props);
@@ -22,7 +24,8 @@ export default class MessageBoard extends BaseComponent{
         backgroundColor: "white",
         width: "100%",
         height: "400px",
-        whiteSpace: "normal"  
+        whiteSpace: "normal",
+        position: "relative"  
       },
       message: {
         padding: "10px",
@@ -34,8 +37,17 @@ export default class MessageBoard extends BaseComponent{
       },
       clearButton: {
         marginLeft: "3px"
+      },
+      messageBoard: {
+        position: "absolute",
+        top:"-30px",
+        right: "0px",
+        fontSize: "150%"
       }
     }
+  }
+  showMeButton(name){
+    ApplicationActions.setPane(name)
   }
   render(){
     console.log(this.state.messages);
@@ -47,7 +59,7 @@ export default class MessageBoard extends BaseComponent{
         <div key={"aMessage_"+aMessage.id + (i++ + ++i)} style={styles.message}>
           <div>{aMessage.message}</div>
           <div>
-            <button className="btn btn-primary">Show me.</button>
+            <button className="btn btn-primary" onClick={e=>this.showMeButton(aMessage.sourceTab)}>Show me the data.</button>
           </div>
         </div>
       );
@@ -61,6 +73,7 @@ export default class MessageBoard extends BaseComponent{
       if(index % 3 == 2) col3.push(message);
     });
     return <div style={styles.container}>
+            <div style={styles.messageBoard}>Message Board</div>
             <div className="row">
               <div className="col-sm-4 col-md-4 col-lg-4 col-xl-4">
                 {col1}
